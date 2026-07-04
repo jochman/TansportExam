@@ -1186,65 +1186,123 @@ header {
 
 /* Responsive styling */
 @media (max-width: 1024px) {
+    body {
+        height: auto !important;
+        overflow: auto !important;
+    }
     .app-container {
         flex-direction: column;
+        height: auto !important;
+        overflow: visible !important;
     }
     .sidebar {
         width: 100%;
+        height: auto !important;
         border-left: none;
         border-bottom: 1px solid var(--card-border);
-        padding: 1.5rem;
+        padding: 1.25rem 1rem;
         gap: 1rem;
+        flex-shrink: 0;
     }
     .logo-area {
         border-bottom: none;
         padding-bottom: 0;
+        justify-content: center;
     }
     .nav-links {
         flex-direction: row;
         overflow-x: auto;
         padding-bottom: 0.5rem;
+        justify-content: flex-start;
+        gap: 0.5rem;
+        width: 100%;
+        -webkit-overflow-scrolling: touch;
     }
     .nav-item {
         white-space: nowrap;
         padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        border-radius: 8px;
+        flex-shrink: 0;
     }
     .nav-item.active {
         border-right: none;
         border-bottom: 3px solid var(--primary);
-        border-radius: 12px 12px 0 0;
+        border-radius: 8px 8px 0 0;
+        background-color: rgba(16, 185, 129, 0.08);
     }
     .stats-summary {
         display: none; /* Hide on small screen top bars to save space */
     }
     .main-content {
-        padding: 1.5rem;
+        padding: 1.5rem 1rem;
+        height: auto !important;
+        overflow-y: visible !important;
+        gap: 1.5rem;
+        max-width: 100%;
+        margin: 0;
+    }
+    header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
     }
     .welcome-hero {
-        padding: 2rem;
+        padding: 2rem 1.5rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
     }
     .welcome-text h2 {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
+    }
+    .welcome-text p {
+        font-size: 1rem;
+    }
+    .dictionary-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+    .controls-panel {
+        padding: 1.25rem 1rem;
+        gap: 1rem;
     }
 }
 
 @media (max-width: 640px) {
     .nav-links {
-        justify-content: space-between;
+        justify-content: flex-start;
     }
     .header-title h1 {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
+    }
+    .header-title p {
+        font-size: 0.9rem;
     }
     .search-row {
         flex-direction: column;
     }
     .quiz-view {
-        padding: 1.5rem;
+        padding: 1.25rem 1rem;
+        gap: 1.25rem;
     }
     .flashcard-wrapper {
         height: 320px;
     }
     .flashcard-front .card-title-lg {
-        font-size: 1.7rem;
+        font-size: 1.6rem;
+    }
+    .flashcard-back .back-title {
+        font-size: 1.2rem;
+    }
+    .flashcard-back .back-definition {
+        font-size: 0.95rem;
+    }
+    .quiz-question-text {
+        font-size: 1.15rem;
+    }
+    .quiz-option {
+        padding: 0.9rem 1.1rem;
+        font-size: 0.95rem;
     }
 }

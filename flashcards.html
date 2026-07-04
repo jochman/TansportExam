@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>כרטיסיות לימוד - תחבורה בת-קיימא</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Rubik:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- External stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="light">
+
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <i class="fa-solid fa-traffic-light"></i>
+                <span>תחבורה בת-קיימא</span>
+            </div>
+            
+            <nav>
+                <ul class="nav-links">
+                    <li>
+                        <a class="nav-item" href="index.html" id="nav-dashboard">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <span>לוח בקרה</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-item" href="dictionary.html" id="nav-dictionary">
+                            <i class="fa-solid fa-book-open"></i>
+                            <span>מילון מושגים</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-item active" href="flashcards.html" id="nav-flashcards">
+                            <i class="fa-solid fa-clone"></i>
+                            <span>כרטיסיות לימוד</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-item" href="open-questions.html" id="nav-open-questions">
+                            <i class="fa-solid fa-clipboard-question"></i>
+                            <span>שאלות פתוחות</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-item" href="quiz.html" id="nav-quiz">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                            <span>בחן את עצמך</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Learning Progress Box in Sidebar -->
+            <div class="stats-summary">
+                <div class="stats-summary-title">התקדמות כללית</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="sidebar-progress-fill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="sidebar-progress-percent">0%</span>
+                    <span id="sidebar-progress-ratio">0/0</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- App Header -->
+            <header>
+                <div class="header-title">
+                    <h1>כרטיסיות לימוד</h1>
+                    <p>בחן את עצמך בשיטת Active Recall - הפוך את הכרטיסייה להגדרה ודוגמה</p>
+                </div>
+                <button class="theme-toggle-btn" onclick="toggleTheme()" title="שנה מצב תצוגה">
+                    <i class="fa-solid fa-moon" id="theme-icon"></i>
+                </button>
+            </header>
+
+            <!-- Flashcard Section -->
+            <div class="study-view">
+                
+                <div class="flashcard-wrapper" onclick="toggleFlashcardFlip()">
+                    <div class="flashcard" id="flashcard-element">
+                        <!-- Front of Card -->
+                        <div class="flashcard-front">
+                            <span class="card-cat-indicator" id="flashcard-cat">טוען...</span>
+                            <h3 class="card-title-lg" id="flashcard-title">מושג</h3>
+                            <div class="hint-text">
+                                <i class="fa-solid fa-rotate"></i>
+                                <span>לחץ כדי להציג את ההגדרה</span>
+                            </div>
+                        </div>
+                        <!-- Back of Card -->
+                        <div class="flashcard-back">
+                            <div class="back-title" id="flashcard-title-back">מושג</div>
+                            <div class="back-definition" id="flashcard-def">טוען...</div>
+                            <div class="hint-text-back">
+                                <i class="fa-solid fa-rotate"></i> לחץ כדי להפוך חזרה
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flashcard navigation controls -->
+                <div class="study-controls">
+                    <button class="study-nav-btn" onclick="prevFlashcard()" title="כרטיסייה קודמת">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <div class="study-progress-counter" id="flashcard-counter">1 מתוך 31</div>
+                    <button class="study-nav-btn" onclick="nextFlashcard()" title="כרטיסייה הבאה">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                </div>
+
+                <!-- Assessment / feedback buttons -->
+                <div class="study-feedback-buttons">
+                    <button class="feedback-btn btn-dont-know" onclick="handleCardFeedback(false)">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                        <span>צריך לחזור על זה</span>
+                    </button>
+                    <button class="feedback-btn btn-know" onclick="handleCardFeedback(true)">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>ידעתי!</span>
+                    </button>
+                </div>
+            </div>
+            
+        </main>
+    </div>
+
+    <!-- DB and Core Application JS -->
+    <script src="db.js"></script>
+    <script>
+        let flashcardsOrder = [];
+        let currentFlashcardIndex = 0;
+        let isFlashcardFlipped = false;
+
+        function initPage() {
+            setupFlashcards();
+        }
+
+        function setupFlashcards() {
+            flashcardsOrder = concepts.map(c => c.id);
+            // Fisher-Yates shuffle
+            for (let i = flashcardsOrder.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcardsOrder[i], flashcardsOrder[j]] = [flashcardsOrder[j], flashcardsOrder[i]];
+            }
+            currentFlashcardIndex = 0;
+            isFlashcardFlipped = false;
+            document.getElementById('flashcard-element').classList.remove('flipped');
+            displayFlashcard();
+        }
+
+        function displayFlashcard() {
+            const conceptId = flashcardsOrder[currentFlashcardIndex];
+            const concept = concepts.find(c => c.id === conceptId);
+            
+            if (!concept) return;
+
+            document.getElementById('flashcard-title').textContent = concept.title;
+            document.getElementById('flashcard-title-back').textContent = concept.title;
+            
+            document.getElementById('flashcard-def').innerHTML = `
+                <p style="margin-bottom: 1.25rem;">${concept.definition}</p>
+                ${concept.example ? `
+                    <div style="padding: 0.75rem 1rem; background-color: var(--bg-primary); border-right: 3px solid var(--accent); border-radius: 8px; font-size: 0.95rem; text-align: right; color: var(--text-secondary);">
+                        <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;"><i class="fa-solid fa-lightbulb" style="color: var(--accent); margin-left: 0.25rem;"></i>דוגמה:</strong>
+                        ${concept.example}
+                    </div>
+                ` : ''}
+            `;
+            
+            document.getElementById('flashcard-cat').textContent = `${concept.categoryHebrew} | ${concept.source}`;
+            document.getElementById('flashcard-counter').textContent = `${currentFlashcardIndex + 1} מתוך ${flashcardsOrder.length}`;
+        }
+
+        function toggleFlashcardFlip() {
+            isFlashcardFlipped = !isFlashcardFlipped;
+            const element = document.getElementById('flashcard-element');
+            if (isFlashcardFlipped) {
+                element.classList.add('flipped');
+            } else {
+                element.classList.remove('flipped');
+            }
+        }
+
+        function nextFlashcard() {
+            if (currentFlashcardIndex < flashcardsOrder.length - 1) {
+                currentFlashcardIndex++;
+            } else {
+                currentFlashcardIndex = 0; // Wrap around
+            }
+            
+            if (isFlashcardFlipped) {
+                toggleFlashcardFlip();
+                setTimeout(displayFlashcard, 250);
+            } else {
+                displayFlashcard();
+            }
+        }
+
+        function prevFlashcard() {
+            if (currentFlashcardIndex > 0) {
+                currentFlashcardIndex--;
+            } else {
+                currentFlashcardIndex = flashcardsOrder.length - 1;
+            }
+
+            if (isFlashcardFlipped) {
+                toggleFlashcardFlip();
+                setTimeout(displayFlashcard, 250);
+            } else {
+                displayFlashcard();
+            }
+        }
+
+        function handleCardFeedback(knewIt) {
+            const conceptId = flashcardsOrder[currentFlashcardIndex];
+            
+            if (knewIt) {
+                if (!state.learnedIds.includes(conceptId)) {
+                    state.learnedIds.push(conceptId);
+                    state.xp += 15; // Extra XP for learning in flashcards!
+                }
+            } else {
+                const learnedIdx = state.learnedIds.indexOf(conceptId);
+                if (learnedIdx > -1) {
+                    state.learnedIds.splice(learnedIdx, 1);
+                }
+            }
+            
+            saveStateToStorage();
+            updateProgressStats();
+            nextFlashcard();
+        }
+    </script>
+</body>
+</html>

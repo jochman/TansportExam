@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מילון מושגים - תחבורה בת-קיימא</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Rubik:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- External stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="light">
+
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <i class="fa-solid fa-traffic-light"></i>
+                <span>תחבורה בת-קיימא</span>
+            </div>
+            
+            <nav>
+                <ul class="nav-links">
+                    <li>
+                        <a class="nav-item" href="index.html" id="nav-dashboard">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <span>לוח בקרה</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-item active" href="dictionary.html" id="nav-dictionary">
+                            <i class="fa-solid fa-book-open"></i>
+                            <span>מילון מושגים</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-item" href="flashcards.html" id="nav-flashcards">
+                            <i class="fa-solid fa-clone"></i>
+                            <span>כרטיסיות לימוד</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-item" href="open-questions.html" id="nav-open-questions">
+                            <i class="fa-solid fa-clipboard-question"></i>
+                            <span>שאלות פתוחות</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-item" href="quiz.html" id="nav-quiz">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                            <span>בחן את עצמך</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Learning Progress Box in Sidebar -->
+            <div class="stats-summary">
+                <div class="stats-summary-title">התקדמות כללית</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="sidebar-progress-fill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="sidebar-progress-percent">0%</span>
+                    <span id="sidebar-progress-ratio">0/0</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- App Header -->
+            <header>
+                <div class="header-title">
+                    <h1>מילון מושגים מלא</h1>
+                    <p>מאגר מקיף של כל הגדרות הקורס עם כלי סינון וחיפוש מתקדמים</p>
+                </div>
+                <button class="theme-toggle-btn" onclick="toggleTheme()" title="שנה מצב תצוגה">
+                    <i class="fa-solid fa-moon" id="theme-icon"></i>
+                </button>
+            </header>
+
+            <!-- Search & Categories Bar -->
+            <div class="controls-panel">
+                <div class="search-row">
+                    <div class="search-input-wrapper">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" class="search-input" id="search-bar" placeholder="חפש מושג, מונח באנגלית, הגדרה או שיעור..." oninput="filterConcepts()">
+                    </div>
+                </div>
+                
+                <div class="categories-filter" id="category-filters">
+                    <button class="filter-btn active" onclick="setCategoryFilter('all')">הכל</button>
+                    <button class="filter-btn" onclick="setCategoryFilter('sustainability')">מושגי יסוד וקיימות</button>
+                    <button class="filter-btn" onclick="setCategoryFilter('economics')">כלכלת תחבורה ומיסוי</button>
+                    <button class="filter-btn" onclick="setCategoryFilter('policy')">רגולציה ומדיניות סביבתית</button>
+                    <button class="filter-btn" onclick="setCategoryFilter('planning')">תכנון עירוני ותחבורה פעילה</button>
+                    <button class="filter-btn" onclick="setCategoryFilter('learned')">נלמדו רק ✔</button>
+                    <button class="filter-btn" onclick="setCategoryFilter('unlearned')">טרם נלמדו ❌</button>
+                </div>
+            </div>
+
+            <!-- Dictionary Grid -->
+            <div class="dictionary-grid" id="concepts-grid">
+                <!-- Concept cards dynamically loaded here -->
+            </div>
+            
+        </main>
+    </div>
+
+    <!-- DB and Core Application JS -->
+    <script src="db.js"></script>
+    <script>
+        let currentFilter = 'all';
+        let searchQuery = '';
+
+        function initPage() {
+            renderConcepts();
+        }
+
+        // Render Concept cards in Grid
+        function renderConcepts() {
+            const grid = document.getElementById('concepts-grid');
+            grid.innerHTML = '';
+
+            const filtered = getFilteredConcepts();
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-box-open"></i>
+                        <h3>לא נמצאו מושגים מתאימים</h3>
+                        <p>נסה לשנות את מילת החיפוש או את מסנן הקטגוריות</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(concept => {
+                const isLearned = state.learnedIds.includes(concept.id);
+                const card = document.createElement('div');
+                card.className = `concept-card ${isLearned ? 'learned-card' : ''}`;
+                card.id = `card-${concept.id}`;
+                
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="card-badges">
+                            <span class="badge badge-cat">${concept.categoryHebrew}</span>
+                            <span class="badge badge-lesson">${concept.source}</span>
+                        </div>
+                        ${isLearned ? `
+                            <span class="learned-badge">
+                                <i class="fa-solid fa-circle-check"></i> נלמד
+                            </span>
+                        ` : ''}
+                    </div>
+                    <h3 class="concept-title">${concept.id}. ${concept.title}</h3>
+                    <p class="concept-definition" style="margin-bottom: 1rem;">${concept.definition}</p>
+                    ${concept.example ? `
+                        <div class="concept-example" style="margin-top: -0.5rem; margin-bottom: 1.25rem; padding: 0.75rem 1rem; background-color: var(--bg-primary); border-right: 3px solid var(--accent); border-radius: 8px; font-size: 0.9rem; color: var(--text-secondary);">
+                            <span style="font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 0.25rem;"><i class="fa-solid fa-lightbulb" style="color: var(--accent); margin-left: 0.25rem;"></i>דוגמה:</span>
+                            ${concept.example}
+                        </div>
+                    ` : ''}
+                    <div class="card-actions">
+                        <button class="btn-learned-toggle" onclick="toggleLearned(${concept.id}, event)">
+                            <i class="fa-solid ${isLearned ? 'fa-check-double' : 'fa-check'}"></i>
+                            <span>${isLearned ? 'סומן כנלמד' : 'סמן כנלמד'}</span>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Filter concept logic
+        function filterConcepts() {
+            searchQuery = document.getElementById('search-bar').value.toLowerCase().trim();
+            renderConcepts();
+        }
+
+        function setCategoryFilter(category) {
+            currentFilter = category;
+            
+            // Update active states on filter buttons
+            const filterContainer = document.getElementById('category-filters');
+            filterContainer.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Find correct button to set active
+            event.target.classList.add('active');
+            
+            renderConcepts();
+        }
+
+        function getFilteredConcepts() {
+            return concepts.filter(concept => {
+                // Category filtering
+                let matchesCategory = true;
+                if (currentFilter === 'learned') {
+                    matchesCategory = state.learnedIds.includes(concept.id);
+                } else if (currentFilter === 'unlearned') {
+                    matchesCategory = !state.learnedIds.includes(concept.id);
+                } else if (currentFilter !== 'all') {
+                    matchesCategory = concept.category === currentFilter;
+                }
+
+                // Search query filtering
+                let matchesSearch = true;
+                if (searchQuery) {
+                    matchesSearch = concept.title.toLowerCase().includes(searchQuery) || 
+                                    concept.definition.toLowerCase().includes(searchQuery) ||
+                                    concept.source.toLowerCase().includes(searchQuery);
+                }
+
+                return matchesCategory && matchesSearch;
+            });
+        }
+
+        // Toggle "Learned" state
+        function toggleLearned(id, event) {
+            if (event) {
+                event.stopPropagation();
+            }
+
+            const index = state.learnedIds.indexOf(id);
+            if (index > -1) {
+                state.learnedIds.splice(index, 1);
+                state.xp = Math.max(0, state.xp - 10); // Deduct XP
+            } else {
+                state.learnedIds.push(id);
+                state.xp += 10; // Earn XP
+                createConfettiEffect(event);
+            }
+
+            saveStateToStorage();
+            renderConcepts();
+            updateProgressStats();
+        }
+
+        // Confetti burst on clicking "Learned"
+        function createConfettiEffect(event) {
+            if (!event) return;
+            const btn = event.currentTarget;
+            const rect = btn.getBoundingClientRect();
+            
+            for (let i = 0; i < 8; i++) {
+                const conf = document.createElement('div');
+                conf.style.position = 'fixed';
+                conf.style.width = '6px';
+                conf.style.height = '6px';
+                conf.style.borderRadius = '50%';
+                conf.style.backgroundColor = ['#10b981', '#38bdf8', '#fbbf24', '#f87171'][Math.floor(Math.random() * 4)];
+                conf.style.left = `${rect.left + rect.width / 2}px`;
+                conf.style.top = `${rect.top + rect.height / 2}px`;
+                conf.style.pointerEvents = 'none';
+                conf.style.zIndex = '999';
+                conf.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                
+                document.body.appendChild(conf);
+                
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 30 + Math.random() * 40;
+                
+                setTimeout(() => {
+                    conf.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`;
+                    conf.style.opacity = '0';
+                }, 50);
+
+                setTimeout(() => {
+                    conf.remove();
+                }, 700);
+            }
+        }
+    </script>
+</body>
+</html>

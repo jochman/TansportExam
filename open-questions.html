@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>שאלות פתוחות - תחבורה בת-קיימא</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Rubik:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- External stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="light">
+
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <i class="fa-solid fa-traffic-light"></i>
+                <span>תחבורה בת-קיימא</span>
+            </div>
+            
+            <nav>
+                <ul class="nav-links">
+                    <li>
+                        <a class="nav-item" href="index.html" id="nav-dashboard">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <span>לוח בקרה</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-item" href="dictionary.html" id="nav-dictionary">
+                            <i class="fa-solid fa-book-open"></i>
+                            <span>מילון מושגים</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-item" href="flashcards.html" id="nav-flashcards">
+                            <i class="fa-solid fa-clone"></i>
+                            <span>כרטיסיות לימוד</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-item active" href="open-questions.html" id="nav-open-questions">
+                            <i class="fa-solid fa-clipboard-question"></i>
+                            <span>שאלות פתוחות</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-item" href="quiz.html" id="nav-quiz">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                            <span>בחן את עצמך</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Learning Progress Box in Sidebar -->
+            <div class="stats-summary">
+                <div class="stats-summary-title">התקדמות כללית</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="sidebar-progress-fill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="sidebar-progress-percent">0%</span>
+                    <span id="sidebar-progress-ratio">0/0</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- App Header -->
+            <header>
+                <div class="header-title">
+                    <h1>שאלות פתוחות ותשובות</h1>
+                    <p>סקירה מעמיקה של שאלות ניתוח מורכבות מהמבחנים</p>
+                </div>
+                <button class="theme-toggle-btn" onclick="toggleTheme()" title="שנה מצב תצוגה">
+                    <i class="fa-solid fa-moon" id="theme-icon"></i>
+                </button>
+            </header>
+
+            <!-- Open Questions List Container -->
+            <div class="open-questions-container" id="open-questions-list">
+                <!-- Open Questions will be loaded dynamically here -->
+            </div>
+            
+        </main>
+    </div>
+
+    <!-- DB and Core Application JS -->
+    <script src="db.js"></script>
+    <script>
+        function initPage() {
+            renderOpenQuestions();
+        }
+
+        // Render Open Questions List
+        function renderOpenQuestions() {
+            const list = document.getElementById('open-questions-list');
+            list.innerHTML = '';
+
+            openQuestions.forEach(q => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.innerHTML = `
+                    <div class="question-header">
+                        <span class="badge badge-cat" style="background-color: rgba(14, 165, 233, 0.1); color: var(--secondary); font-size: 0.85rem; padding: 0.4rem 1rem;">שאלה פתוחה ${q.id}</span>
+                        <button class="reveal-btn" onclick="toggleAnswer(${q.id}, this)">
+                            <i class="fa-solid fa-eye"></i>
+                            <span>הצג תשובה מוצעת</span>
+                        </button>
+                    </div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="answer-box" id="answer-${q.id}">
+                        ${q.answer}
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function toggleAnswer(id, btn) {
+            const answerBox = document.getElementById(`answer-${id}`);
+            const isVisible = answerBox.classList.contains('visible');
+            
+            if (isVisible) {
+                answerBox.classList.remove('visible');
+                btn.innerHTML = `<i class="fa-solid fa-eye"></i> <span>הצג תשובה מוצעת</span>`;
+                btn.style.backgroundColor = 'var(--secondary)';
+            } else {
+                answerBox.classList.add('visible');
+                btn.innerHTML = `<i class="fa-solid fa-eye-slash"></i> <span>הסתר תשובה</span>`;
+                btn.style.backgroundColor = 'var(--text-secondary)';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בחן את עצמך - תחבורה בת-קיימא</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Rubik:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- External stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="light">
+
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <i class="fa-solid fa-traffic-light"></i>
+                <span>תחבורה בת-קיימא</span>
+            </div>
+            
+            <nav>
+                <ul class="nav-links">
+                    <li>
+                        <a class="nav-item" href="index.html" id="nav-dashboard">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <span>לוח בקרה</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-item" href="dictionary.html" id="nav-dictionary">
+                            <i class="fa-solid fa-book-open"></i>
+                            <span>מילון מושגים</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-item" href="flashcards.html" id="nav-flashcards">
+                            <i class="fa-solid fa-clone"></i>
+                            <span>כרטיסיות לימוד</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-item" href="open-questions.html" id="nav-open-questions">
+                            <i class="fa-solid fa-clipboard-question"></i>
+                            <span>שאלות פתוחות</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-item active" href="quiz.html" id="nav-quiz">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                            <span>בחן את עצמך</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Learning Progress Box in Sidebar -->
+            <div class="stats-summary">
+                <div class="stats-summary-title">התקדמות כללית</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="sidebar-progress-fill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="sidebar-progress-percent">0%</span>
+                    <span id="sidebar-progress-ratio">0/0</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- App Header -->
+            <header>
+                <div class="header-title">
+                    <h1>בחן את עצמך</h1>
+                    <p>סימולציה של 10 שאלות אמריקאיות להערכת המוכנות למבחן</p>
+                </div>
+                <button class="theme-toggle-btn" onclick="toggleTheme()" title="שנה מצב תצוגה">
+                    <i class="fa-solid fa-moon" id="theme-icon"></i>
+                </button>
+            </header>
+
+            <!-- Quiz Box Container -->
+            <div class="quiz-view" id="quiz-box">
+                    
+                <!-- 1. Quiz Start Screen -->
+                <div class="quiz-start-screen" id="quiz-start-screen">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                    <h2>סימולציית מבחן אינטראקטיבית</h2>
+                    <p>הסימולציה כוללת 10 שאלות אמריקאיות (בחירה מרובה) שנוצרות באופן אקראי מתוך כל מאגר מושגי התחבורה בת-הקיימא שלך. מצוין להערכת רמת הידע והמוכנות שלך למבחן.</p>
+                    <button class="btn-start-quiz" onclick="startQuiz()">התחל בבחינה</button>
+                </div>
+
+                <!-- 2. Quiz Active Screen -->
+                <div class="quiz-active-screen" id="quiz-active-screen">
+                    <div class="quiz-header">
+                        <div class="quiz-progress-num" id="quiz-progress-num">שאלה 1 מתוך 10</div>
+                        <div class="quiz-score-indicator" id="quiz-score-indicator">נקודות: 0</div>
+                    </div>
+
+                    <div class="quiz-question-container">
+                        <div class="quiz-question-type" id="quiz-question-type">התאם את המושג להגדרה</div>
+                        <div class="quiz-question-text" id="quiz-question-text">מהי ההגדרה הנכונה עבור...?</div>
+                    </div>
+
+                    <div class="quiz-options-list" id="quiz-options-list">
+                        <!-- Options dynamically rendered here -->
+                    </div>
+
+                    <div class="quiz-feedback-box" id="quiz-feedback-box">
+                        משוב לשאלה
+                    </div>
+
+                    <button class="btn-next-quiz" id="btn-next-quiz" onclick="nextQuizQuestion()">המשך לשאלה הבאה</button>
+                </div>
+
+                <!-- 3. Quiz Summary Screen -->
+                <div class="quiz-summary-screen" id="quiz-summary-screen">
+                    <div class="quiz-score-circle" id="quiz-score-circle">
+                        <div class="quiz-score-circle-inner">
+                            <span class="quiz-score-percent" id="quiz-score-percent">0%</span>
+                            <span class="quiz-score-label">ציון סופי</span>
+                        </div>
+                    </div>
+
+                    <div class="quiz-summary-text">
+                        <h3 id="quiz-summary-heading">כל הכבוד!</h3>
+                        <p id="quiz-summary-body">סיימת את סימולציית המבחן בהצלחה.</p>
+                    </div>
+
+                    <div class="quiz-action-buttons">
+                        <button class="btn-start-quiz" onclick="startQuiz()">נסה שוב</button>
+                        <a class="btn-start-quiz" style="background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--card-border); box-shadow: none; text-decoration: none; display: flex; align-items: center; justify-content: center;" href="dictionary.html">חזור למילון</a>
+                    </div>
+                </div>
+
+            </div>
+            
+        </main>
+    </div>
+
+    <!-- DB and Core Application JS -->
+    <script src="db.js"></script>
+    <script>
+        let quizQuestions = [];
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+        let quizAnswered = false;
+
+        function initPage() {
+            // Nothing to initialize specifically, wait for user click start
+        }
+
+        function startQuiz() {
+            document.getElementById('quiz-start-screen').style.display = 'none';
+            document.getElementById('quiz-summary-screen').style.display = 'none';
+            document.getElementById('quiz-active-screen').style.display = 'flex';
+            
+            quizQuestions = generateQuizQuestions();
+            currentQuizIndex = 0;
+            quizScore = 0;
+            quizAnswered = false;
+            
+            displayQuizQuestion();
+        }
+
+        function generateQuizQuestions() {
+            // Shuffle concepts to choose 10 random ones
+            const shuffled = [...concepts].sort(() => 0.5 - Math.random());
+            const selected = shuffled.slice(0, 10);
+            
+            return selected.map((correctConcept, idx) => {
+                // Choose type: 0 = term given -> match def, 1 = def given -> match term
+                const type = Math.random() > 0.5 ? 0 : 1;
+                
+                // Get 3 incorrect distractor concepts from the rest of the database
+                const distractors = concepts
+                    .filter(c => c.id !== correctConcept.id)
+                    .sort(() => 0.5 - Math.random())
+                    .slice(0, 3);
+                
+                // Construct options list
+                const options = [correctConcept, ...distractors].sort(() => 0.5 - Math.random());
+                
+                return {
+                    correctId: correctConcept.id,
+                    type: type,
+                    concept: correctConcept,
+                    options: options
+                };
+            });
+        }
+
+        function displayQuizQuestion() {
+            quizAnswered = false;
+            document.getElementById('btn-next-quiz').style.display = 'none';
+            document.getElementById('quiz-feedback-box').style.display = 'none';
+            
+            const q = quizQuestions[currentQuizIndex];
+            
+            // Update progress header
+            document.getElementById('quiz-progress-num').textContent = `שאלה ${currentQuizIndex + 1} מתוך 10`;
+            document.getElementById('quiz-score-indicator').textContent = `נקודות: ${quizScore * 10}`;
+
+            const qTypeText = document.getElementById('quiz-question-type');
+            const qText = document.getElementById('quiz-question-text');
+            const optionsList = document.getElementById('quiz-options-list');
+            
+            optionsList.innerHTML = '';
+            
+            if (q.type === 0) {
+                // Term given -> choose definition
+                qTypeText.textContent = "התאם את ההגדרה למושג";
+                qText.textContent = `מהי ההגדרה הנכונה ביותר למושג: \"${q.concept.title}\"?`;
+                
+                q.options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'quiz-option';
+                    btn.onclick = () => selectQuizOption(opt.id, btn);
+                    btn.innerHTML = `
+                        <span>${opt.definition}</span>
+                        <i class="fa-solid quiz-option-status-icon"></i>
+                    `;
+                    optionsList.appendChild(btn);
+                });
+            } else {
+                // Definition given -> choose term
+                qTypeText.textContent = "התאם את המושג להגדרה";
+                qText.textContent = `לאיזה מושג מתאימה ההגדרה הבאה: \"${q.concept.definition}\"?`;
+                
+                q.options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'quiz-option';
+                    btn.onclick = () => selectQuizOption(opt.id, btn);
+                    btn.innerHTML = `
+                        <span>${opt.title}</span>
+                        <i class="fa-solid quiz-option-status-icon"></i>
+                    `;
+                    optionsList.appendChild(btn);
+                });
+            }
+        }
+
+        function selectQuizOption(selectedId, optionElement) {
+            if (quizAnswered) return; // Prevent double answering
+            
+            quizAnswered = true;
+            const q = quizQuestions[currentQuizIndex];
+            const optionsList = document.getElementById('quiz-options-list');
+            const feedbackBox = document.getElementById('quiz-feedback-box');
+            
+            // Mark correct & incorrect options visually
+            Array.from(optionsList.children).forEach(child => {
+                child.classList.remove('correct', 'incorrect');
+            });
+            
+            if (selectedId === q.correctId) {
+                // Correct answer!
+                quizScore++;
+                state.xp += 15; // Earn XP!
+                optionElement.classList.add('correct');
+                optionElement.querySelector('i').className = 'fa-solid fa-circle-check quiz-option-status-icon';
+                
+                feedbackBox.className = 'quiz-feedback-box correct-feedback';
+                feedbackBox.innerHTML = `
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span><b>תשובה נכונה!</b> כל הכבוד. השגת 15 נקודות XP.</span>
+                `;
+            } else {
+                // Incorrect answer
+                optionElement.classList.add('incorrect');
+                optionElement.querySelector('i').className = 'fa-solid fa-circle-xmark quiz-option-status-icon';
+                
+                // Highlight correct option
+                const correctOptionIndex = q.options.findIndex(opt => opt.id === q.correctId);
+                const correctButton = optionsList.children[correctOptionIndex];
+                correctButton.classList.add('correct');
+                correctButton.querySelector('i').className = 'fa-solid fa-circle-check quiz-option-status-icon';
+                
+                feedbackBox.className = 'quiz-feedback-box incorrect-feedback';
+                feedbackBox.innerHTML = `
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span><b>טעות.</b> התשובה הנכונה מודגשת בירוק. לא נורא, ממשיכים הלאה!</span>
+                `;
+            }
+            
+            // Append definition and example explanation
+            feedbackBox.innerHTML += `
+                <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px dashed var(--card-border); font-size: 0.9rem; font-weight: normal; color: var(--text-secondary);">
+                    <b>הסבר:</b> ${q.concept.definition}
+                    ${q.concept.example ? `<br><span style="display: block; margin-top: 0.25rem;"><b>דוגמה:</b> ${q.concept.example}</span>` : ''}
+                </div>
+            `;
+            
+            feedbackBox.style.display = 'block';
+            document.getElementById('btn-next-quiz').style.display = 'block';
+            
+            saveStateToStorage();
+        }
+
+        function nextQuizQuestion() {
+            if (currentQuizIndex < 9) {
+                currentQuizIndex++;
+                displayQuizQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-active-screen').style.display = 'none';
+            document.getElementById('quiz-summary-screen').style.display = 'flex';
+            
+            const finalScorePercent = (quizScore / 10) * 100;
+            state.lastQuizScore = finalScorePercent;
+            
+            // Award bonus XP for finishing quiz
+            state.xp += quizScore * 5 + 50; 
+            saveStateToStorage();
+            
+            // Draw progress circle
+            const circle = document.getElementById('quiz-score-circle');
+            circle.style.background = `conic-gradient(var(--success) ${finalScorePercent * 3.6}deg, var(--bg-primary) 0deg)`;
+            
+            document.getElementById('quiz-score-percent').textContent = `${finalScorePercent}%`;
+            
+            const heading = document.getElementById('quiz-summary-heading');
+            const bodyText = document.getElementById('quiz-summary-body');
+            
+            if (finalScorePercent === 100) {
+                heading.textContent = "🏆 מושלם! מדהים!";
+                bodyText.textContent = `ענית נכון על 10 מתוך 10 שאלות. אתה מוכן לחלוטין למבחן!`;
+            } else if (finalScorePercent >= 80) {
+                heading.textContent = "🌟 מצוין!";
+                bodyText.textContent = `ענית נכון על ${quizScore} מתוך 10 שאלות. תוצאה נהדרת!`;
+            } else if (finalScorePercent >= 60) {
+                heading.textContent = "👍 עובר!";
+                bodyText.textContent = `ענית נכון על ${quizScore} מתוך 10 שאלות. מומלץ לחזור על המילון ולנסות שוב.`;
+            } else {
+                heading.textContent = "📚 צריך עוד קצת תרגול";
+                bodyText.textContent = `ענית נכון על ${quizScore} מתוך 10 שאלות. אל תתייאש, חזור על הכרטיסיות ונסה שנית.`;
+            }
+        }
+    </script>
+</body>
+</html>
